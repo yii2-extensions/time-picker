@@ -12,7 +12,7 @@
         "jquery",
         "plugin"
     ],
-    "homepage": "https://github.com/kartik-v/yii2-widget-timepicker",
+    "homepage": "https://github.com/yii2-extensions/time-picker",
     "type": "yii2-extension",
     "license": "BSD-3-Clause",
     "authors": [
@@ -20,6 +20,10 @@
             "name": "Kartik Visweswaran",
             "email": "kartikv2@gmail.com",
             "homepage": "http://www.krajee.com/"
+        },
+        {
+            "name": "Stefano Mtangoo",
+            "email": "mwinjilisti@gmail.com",
         }
     ],
     "require": {
@@ -27,7 +31,7 @@
     },
     "autoload": {
         "psr-4": {
-            "kartik\\time\\": "src"
+            "Yii2\\Extensions\\TimePicker\\": "src"
         }
     },
     "extra": {

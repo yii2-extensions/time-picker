@@ -7,7 +7,7 @@
  * @version 1.0.5
  */
 
-namespace kartik\time;
+namespace Yii2\Extensions\TimePicker;
 
 use yii\base\InvalidConfigException;
 use yii\helpers\ArrayHelper;
