@@ -8,7 +8,7 @@ The preferred way to install this extension is through [composer](http://getcomp
 To install, either run
 
 ```
-$ php composer.phar require yii2-extensions/time-picker "^1.0"
+composer require yii2-extensions/time-picker "^1.0"
 ```
 
 or add
