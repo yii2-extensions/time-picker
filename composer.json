@@ -1,5 +1,5 @@
 {
-    "name": "kartik-v/yii2-widget-timepicker",
+    "name": "yii2-extensions/time-picker",
     "description": "Enhanced Yii2 wrapper for the bootstrap timepicker plugin (sub repo split from yii2-widgets)",
     "keywords": [
         "yii2",
