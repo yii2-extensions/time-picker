@@ -1,7 +1,9 @@
 /*!
  * Timepicker Component for Twitter Bootstrap
  * 
- * Improvements by: Kartik Visweswaran, Krajee.com, 2014 - 2021
+ * Improvements by: 
+ * - Kartik Visweswaran, Krajee.com, 2014 - 2021
+ * - Stefano Mtangoo<mwinjilisti@gmail.com> and contributors, 2024 - 
  *
  * Copyright 2013 Joris de Wit
  *
@@ -96,6 +98,14 @@
         blurElement: function () {
             this.highlightedUnit = undefined;
             this.updateFromElementVal();
+        },
+        clear: function () {
+            this.hour = '';
+            this.minute = '';
+            this.second = '';
+            this.meridian = '';
+
+            this.$element.val('');
         },
         decrementHour: function () {
             if (this.showMeridian) {
@@ -575,71 +585,137 @@
                 this.updateFromElementVal();
             }
         },
-        setTime: function (time) {
-            var arr,
-                timeArray;
-
-            if (this.showMeridian) {
-                arr = time.split(' ');
-                timeArray = arr[0].split(':');
-                this.meridian = arr[1];
-            } else {
-                timeArray = time.split(':');
+        setTime: function (time, ignoreWidget) {
+            if (!time) {
+                this.clear();
+                return;
             }
 
-            this.hour = parseInt(timeArray[0], 10);
-            this.minute = parseInt(timeArray[1], 10);
-            this.second = parseInt(timeArray[2], 10);
+            var timeMode,
+                timeArray,
+                hour,
+                minute,
+                second,
+                meridian;
 
-            if (isNaN(this.hour)) {
-                this.hour = 0;
-            }
-            if (isNaN(this.minute)) {
-                this.minute = 0;
-            }
+            if (typeof time === 'object' && time.getMonth) {
+                // this is a date object
+                hour = time.getHours();
+                minute = time.getMinutes();
+                second = time.getSeconds();
 
-            if (this.showMeridian) {
-                if (this.hour > 12) {
-                    this.hour = 12;
-                } else if (this.hour < 1) {
-                    this.hour = 12;
-                }
+                if (this.showMeridian) {
+                    meridian = 'AM';
+                    if (hour > 12) {
+                        meridian = 'PM';
+                        hour = hour % 12;
+                    }
 
-                if (this.meridian === 'am' || this.meridian === 'a') {
-                    this.meridian = 'AM';
-                } else if (this.meridian === 'pm' || this.meridian === 'p') {
-                    this.meridian = 'PM';
-                }
-
-                if (this.meridian !== 'AM' && this.meridian !== 'PM') {
-                    this.meridian = 'AM';
+                    if (hour === 12) {
+                        meridian = 'PM';
+                    }
                 }
             } else {
-                if (this.hour >= 24) {
-                    this.hour = 23;
-                } else if (this.hour < 0) {
-                    this.hour = 0;
+                timeMode = ((/a/i).test(time) ? 1 : 0) + ((/p/i).test(time) ? 2 : 0); // 0 = none, 1 = AM, 2 = PM, 3 = BOTH.
+                if (timeMode > 2) { // If both are present, fail.
+                    this.clear();
+                    return;
+                }
+
+                timeArray = time.replace(/[^0-9\:]/g, '').split(':');
+
+                hour = timeArray[0] ? timeArray[0].toString() : timeArray.toString();
+
+                if (this.explicitMode && hour.length > 2 && (hour.length % 2) !== 0) {
+                    this.clear();
+                    return;
+                }
+
+                minute = timeArray[1] ? timeArray[1].toString() : '';
+                second = timeArray[2] ? timeArray[2].toString() : '';
+
+                // adaptive time parsing
+                if (hour.length > 4) {
+                    second = hour.slice(-2);
+                    hour = hour.slice(0, -2);
+                }
+
+                if (hour.length > 2) {
+                    minute = hour.slice(-2);
+                    hour = hour.slice(0, -2);
+                }
+
+                if (minute.length > 2) {
+                    second = minute.slice(-2);
+                    minute = minute.slice(0, -2);
+                }
+
+                hour = parseInt(hour, 10);
+                minute = parseInt(minute, 10);
+                second = parseInt(second, 10);
+
+                if (isNaN(hour)) {
+                    hour = 0;
+                }
+                if (isNaN(minute)) {
+                    minute = 0;
+                }
+                if (isNaN(second)) {
+                    second = 0;
+                }
+
+                // Adjust the time based upon unit boundary.
+                // NOTE: Negatives will never occur due to time.replace() above.
+                if (second > 59) {
+                    second = 59;
+                }
+
+                if (minute > 59) {
+                    minute = 59;
+                }
+
+                if (hour >= this.maxHours) {
+                    // No day/date handling.
+                    hour = this.maxHours - 1;
+                }
+
+                if (this.showMeridian) {
+                    if (hour > 12) {
+                        // Force PM.
+                        timeMode = 2;
+                        hour -= 12;
+                    }
+                    if (!timeMode) {
+                        timeMode = 1;
+                    }
+                    if (hour === 0) {
+                        hour = 12; // AM or PM, reset to 12.  0 AM = 12 AM.  0 PM = 12 PM, etc.
+                    }
+                    meridian = timeMode === 1 ? 'AM' : 'PM';
+                } else if (hour < 12 && timeMode === 2) {
+                    hour += 12;
+                } else {
+                    if (hour >= this.maxHours) {
+                        hour = this.maxHours - 1;
+                    } else if ((hour < 0) || (hour === 12 && timeMode === 1)) {
+                        hour = 0;
+                    }
                 }
             }
 
-            if (this.minute < 0) {
-                this.minute = 0;
-            } else if (this.minute >= 60) {
-                this.minute = 59;
+            this.hour = hour;
+            if (this.snapToStep) {
+                this.minute = this.changeToNearestStep(minute, this.minuteStep);
+                this.second = this.changeToNearestStep(second, this.secondStep);
+            } else {
+                this.minute = minute;
+                this.second = second;
             }
+            this.meridian = meridian;
 
-            if (this.showSeconds) {
-                if (isNaN(this.second)) {
-                    this.second = 0;
-                } else if (this.second < 0) {
-                    this.second = 0;
-                } else if (this.second >= 60) {
-                    this.second = 59;
-                }
-            }
-
-            this.update();
+            this.update(ignoreWidget);
         },
+
         showWidget: function () {
             if (this.isOpen) {
                 return;
