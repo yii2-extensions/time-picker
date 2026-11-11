@@ -85,7 +85,7 @@ echo $form
         TimePicker::class, [
             'pluginOptions' => [
                 'showMeridian' => false,
-                'defaultTime' => null,
+                'defaultTime' => false,
             ],
         ]
     );
