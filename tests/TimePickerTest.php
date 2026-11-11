@@ -159,13 +159,13 @@ final class TimePickerTest extends TestCase
 
     public function testRendersBootstrapVersionsAndMatchingAssets(): void
     {
-        $boostrap = [
+        $bootstrap = [
             '3' => 'bootstrap',
             '4' => 'bootstrap4',
             '5' => 'bootstrap5',
         ];
 
-        foreach ($boostrap as $version => $namespace) {
+        foreach ($bootstrap as $version => $namespace) {
             Yii::$app->params['bsVersion'] = $version . '.x';
 
             Yii::$app->set(
