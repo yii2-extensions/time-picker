@@ -1,6 +1,8 @@
 {
     "name": "yii2-extensions/time-picker",
-    "description": "Enhanced Yii2 wrapper for the bootstrap timepicker plugin (sub repo split from yii2-widgets)",
+    "type": "yii2-extension",
+    "description": "Bootstrap time picker widget for Yii2 with Krajee input, asset and plugin integration.",
+    "homepage": "https://github.com/yii2-extensions/time-picker",
     "keywords": [
         "yii2",
         "extension",
@@ -12,9 +14,12 @@
         "jquery",
         "plugin"
     ],
-    "homepage": "https://github.com/yii2-extensions/time-picker",
-    "type": "yii2-extension",
     "license": "BSD-3-Clause",
+    "support": {
+        "docs": "https://github.com/yii2-extensions/time-picker/blob/master/docs/installation.md",
+        "issues": "https://github.com/yii2-extensions/time-picker/issues",
+        "source": "https://github.com/yii2-extensions/time-picker"
+    },
     "authors": [
         {
             "name": "Kartik Visweswaran",
@@ -27,11 +32,77 @@
         }
     ],
     "require": {
-        "kartik-v/yii2-krajee-base": ">=2.0.0"
+        "kartik-v/yii2-krajee-base": "^3.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^12.5",
+        "yiisoft/yii2": "~2.0.0",
+        "yiisoft/yii2-bootstrap": "^2.0",
+        "yiisoft/yii2-bootstrap4": "^2.0",
+        "yiisoft/yii2-bootstrap5": "^2.0"
+    },
+    "suggest": {
+        "yiisoft/yii2": "Required by the runtime; the legacy Yii 2.0 integration is exercised by the development suite.",
+        "yiisoft/yii2-bootstrap": "Required when using Bootstrap 3.",
+        "yiisoft/yii2-bootstrap4": "Required when using Bootstrap 4.",
+        "yiisoft/yii2-bootstrap5": "Required when using Bootstrap 5."
     },
     "autoload": {
         "psr-4": {
             "Yii2\\Extensions\\TimePicker\\": "src"
         }
-    }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Yii2\\Extensions\\TimePicker\\Tests\\": "tests"
+        }
+    },
+    "config": {
+        "sort-packages": true,
+        "allow-plugins": {
+            "yiisoft/yii2-composer": false
+        }
+    },
+    "scripts": {
+        "actionlint": "actionlint",
+        "codespell": "codespell --config .github/linters/.codespellrc",
+        "editorconfig-checker": "editorconfig-checker -config .github/linters/.editorconfig-checker.json",
+        "gitleaks": "gitleaks git --config .github/linters/.gitleaks.toml --redact",
+        "markdownlint": "markdownlint-cli2 --config .github/linters/.markdown-lint.yml '**/*.md'",
+        "prettier": "prettier --check --config .prettierrc.json --ignore-path .prettierignore '**/*.md' '**/*.{yml,yaml}'",
+        "quality": [
+            "@actionlint",
+            "@codespell",
+            "@editorconfig-checker",
+            "@markdownlint",
+            "@prettier",
+            "@yamllint"
+        ],
+        "security": [
+            "@zizmor",
+            "@gitleaks"
+        ],
+        "tests": "phpunit",
+        "yamllint": "yamllint -c .github/linters/.yamllint.yml .github",
+        "zizmor": "zizmor --persona=pedantic .github"
+    },
+    "scripts-descriptions": {
+        "actionlint": "Lints GitHub Actions workflows with actionlint.",
+        "codespell": "Checks spelling with codespell.",
+        "editorconfig-checker": "Checks files against the EditorConfig rules.",
+        "gitleaks": "Scans Git history for secrets with Gitleaks.",
+        "markdownlint": "Lints Markdown files with markdownlint-cli2.",
+        "prettier": "Checks Markdown and YAML formatting with Prettier.",
+        "quality": "Runs all repository quality checks.",
+        "security": "Runs the workflow security and secret scanning checks.",
+        "tests": "Runs PHPUnit.",
+        "yamllint": "Lints YAML files with yamllint.",
+        "zizmor": "Audits GitHub Actions workflows with zizmor."
+    },
+    "repositories": [
+        {
+            "type": "composer",
+            "url": "https://asset-packagist.org"
+        }
+    ]
 }
