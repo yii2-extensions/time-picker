@@ -19,4 +19,4 @@ jobs:
   phpstan:
     uses: yii2-framework/actions/.github/workflows/phpstan.yml@0f680c6c2bceb03810384e86a70ba10a2ed90de8 # v2.0.5
     with:
-      composer-flags: --prefer-dist --no-interaction --no-progress --no-plugins
+      ignore-platform-reqs-php-version: "[8.6]"

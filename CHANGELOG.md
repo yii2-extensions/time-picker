@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## 2.0.0 Under development
 
-- chore!: replace Krajee Base with native Yii `InputWidget`; require PHP `8.3`, add Yii 22 support, canonical submission and lowercase namespace.
+- chore!: replace Krajee Base with native Yii `InputWidget`; require PHP `8.3`, add Yii `22` support, canonical submission and lowercase namespace.
 
 ## 1.0.1 - 2024-11-05
 
