@@ -1,6 +1,6 @@
 <svg viewBox="0 0 1200 380" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="features-title features-description">
     <title id="features-title">TimePicker features</title>
-    <desc id="features-description">Yii2 form integration, Bootstrap 3 through 5, configurable time formats and layouts, Krajee integration, and bundled assets.</desc>
+    <desc id="features-description">Yii2 form integration, Bootstrap 3 through 5, configurable time formats and layouts, canonical form submission, and bundled assets.</desc>
     <style>
         text { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
         .box-bg { fill: #e6f4ea; stroke: #a7cdb3; stroke-width: 1; }
@@ -43,9 +43,9 @@
     <g>
         <rect class="box-bg" x="20" y="260" width="570" height="100" rx="6"/>
         <rect x="20" y="260" width="4" height="100" fill="#1f883d"/>
-        <text class="title" x="40" y="290">Krajee Integration</text>
+        <text class="title" x="40" y="290">Form Submission</text>
         <text class="content" x="40" y="318">Plugin options, events, disabled and readonly</text>
-        <text class="content" x="40" y="338">Inherited input and asset configuration</text>
+        <text class="content" x="40" y="338">24-hour values with hidden seconds preserved</text>
     </g>
 
     <g>

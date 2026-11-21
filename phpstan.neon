@@ -1,0 +1,8 @@
+parameters:
+    level: max
+    phpVersion: 80300
+    paths:
+        - src
+    bootstrapFiles:
+        - tests/bootstrap.php
+    tmpDir: runtime/phpstan

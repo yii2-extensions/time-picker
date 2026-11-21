@@ -3,7 +3,7 @@
 ## Standalone input
 
 ```php
-use Yii2\Extensions\TimePicker\TimePicker;
+use yii2\extensions\timepicker\TimePicker;
 use yii\helpers\Html;
 
 echo Html::label('Start time', 'start-time');
@@ -18,7 +18,7 @@ echo TimePicker::widget([
 ## ActiveForm field
 
 ```php
-use Yii2\Extensions\TimePicker\TimePicker;
+use yii2\extensions\timepicker\TimePicker;
 
 echo $form->field($model, 'start_time')->widget(TimePicker::class, [
     'pluginOptions' => [
@@ -31,12 +31,12 @@ echo $form->field($model, 'start_time')->widget(TimePicker::class, [
 ## Client events
 
 ```php
-use Yii2\Extensions\TimePicker\TimePicker;
+use yii2\extensions\timepicker\TimePicker;
 
 echo TimePicker::widget([
     'name' => 'start_time',
     'pluginEvents' => [
-        'changeTime.timepicker' => 'function (event) { console.log(event.time.value); }',
+        'changeTime.timepicker' => 'function (event) { console.log(event.time.canonicalValue); }',
     ],
 ]);
 ```

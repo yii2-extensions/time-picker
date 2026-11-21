@@ -10,7 +10,7 @@ permissions:
 
 jobs:
   quality:
-    uses: yii2-framework/actions/.github/workflows/quality.yml@f0e06ea5cc965cff4431177d448add7b7c98668b # v2.0.1
+    uses: yii2-framework/actions/.github/workflows/quality.yml@0f680c6c2bceb03810384e86a70ba10a2ed90de8 # v2.0.5
     permissions:
       contents: read
     with:
