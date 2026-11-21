@@ -15,6 +15,5 @@ jobs:
       contents: read
     with:
       gitleaks-config: .github/linters/.gitleaks.toml
-      ignore-platform-reqs-php-version: "[8.6]"
     secrets:
       GITLEAKS_LICENSE: ${{ secrets.GITLEAKS_LICENSE }}

@@ -43,7 +43,7 @@ final class TimePickerProvider
      */
     public static function assetFiles(): iterable
     {
-        $published = dirname(__DIR__, 2) . '/src/assets';
+        $published = str_replace('\\', '/', dirname(__DIR__, 2)) . '/src/assets';
 
         yield 'minified files' => [
             ['debug' => false],

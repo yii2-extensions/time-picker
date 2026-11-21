@@ -167,6 +167,7 @@ final class TimePickerTest extends TestCase
         }
 
         Yii::$app->params = $params + Yii::$app->params;
+
         Yii::$app->assetManager->bundles[TimePickerAsset::class] = $bundle;
 
         TimePicker::widget(['name' => 'clock', 'bsVersion' => $version]);
@@ -202,9 +203,21 @@ final class TimePickerTest extends TestCase
     {
         $asset = new TimePickerAsset($config);
 
-        self::assertSame($css, $asset->css, 'Stylesheets must match.');
-        self::assertSame($js, $asset->js, 'Scripts must match.');
-        self::assertSame($sourcePath, $asset->sourcePath, 'Source path must match.');
+        self::assertSame(
+            $css,
+            $asset->css,
+            'Stylesheets must match.',
+        );
+        self::assertSame(
+            $js,
+            $asset->js,
+            'Scripts must match.',
+        );
+        self::assertSame(
+            $sourcePath,
+            $asset->sourcePath === null ? null : str_replace('\\', '/', $asset->sourcePath),
+            'Source path must match with forward slashes.',
+        );
     }
 
     public function testSharesOneOptionsKeyPerDistinctOptionsMap(): void
@@ -224,8 +237,16 @@ final class TimePickerTest extends TestCase
             $keys[0],
             'Key must be a JavaScript identifier of the expected shape.',
         );
-        self::assertNotSame($keys[0], $keys[1], 'Distinct options must get distinct keys.');
-        self::assertSame($keys[0], $keys[2], 'Equal options must share their key.');
+        self::assertNotSame(
+            $keys[0],
+            $keys[1],
+            'Distinct options must get distinct keys.',
+        );
+        self::assertSame(
+            $keys[0],
+            $keys[2],
+            'Equal options must share their key.',
+        );
         self::assertSame(
             [$keys[0], $keys[1]],
             array_keys(Yii::$app->view->js[View::POS_HEAD]),
