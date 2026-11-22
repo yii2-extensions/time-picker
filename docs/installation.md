@@ -9,7 +9,7 @@ Configure the asset repository at the application root if it does not already re
 
 ```bash
 composer config repositories.asset-packagist composer https://asset-packagist.org
-composer require yii2-extensions/time-picker
+composer require yii2-extensions/time-picker:^2.0
 ```
 
 With Yii 2.0, the widget registers the installed Yii Bootstrap asset adapter for the chosen version. The corresponding
@@ -22,7 +22,7 @@ npm directory. Yii 22 resolves its jQuery asset from `@npm/jquery/dist`. Install
 uses Yii's PJAX widget.
 
 ```bash
-composer require yiisoft/yii2:22.0.x-dev yii2-extensions/time-picker
+composer require yiisoft/yii2:22.0.x-dev yii2-extensions/time-picker:^2.0
 npm install jquery@3.7.1 bootstrap@5.3.8
 # For Yii's PJAX widget:
 npm install yii2-pjax@2.0.8

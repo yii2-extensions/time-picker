@@ -54,7 +54,7 @@ which wrapped [rendom's TimePicker plugin](https://github.com/rendom/bootstrap-3
 Install with [Composer](https://getcomposer.org/download/):
 
 ```bash
-composer require yii2-extensions/time-picker
+composer require yii2-extensions/time-picker:^2.0
 ```
 
 Load the Bootstrap CSS that matches your application's `bsVersion`. On Yii 2.0.55, you can use an installed Yii
