@@ -17,6 +17,12 @@
     <a href="https://codecov.io/github/yii2-extensions/time-picker" target="_blank">
         <img src="https://img.shields.io/codecov/c/github/yii2-extensions/time-picker.svg?style=for-the-badge&logo=codecov&logoColor=white&label=Coverage" alt="Coverage">
     </a>
+    <a href="https://dashboard.stryker-mutator.io/reports/github.com/yii2-extensions/time-picker/main" target="_blank">
+        <img src="https://img.shields.io/endpoint?style=for-the-badge&url=https%3A%2F%2Fbadge-api.stryker-mutator.io%2Fgithub.com%2Fyii2-extensions%2Ftime-picker%2Fmain" alt="Mutation Testing">
+    </a>
+    <a href="https://github.com/yii2-extensions/time-picker/actions/workflows/static.yml" target="_blank">
+        <img src="https://img.shields.io/github/actions/workflow/status/yii2-extensions/time-picker/static.yml?style=for-the-badge&label=PHPStan&logo=github" alt="PHPStan">
+    </a>
 </p>
 
 <p align="center">
@@ -37,8 +43,8 @@ which wrapped [rendom's TimePicker plugin](https://github.com/rendom/bootstrap-3
 ## Features
 
 <picture>
-    <source media="(min-width: 768px)" srcset="https://raw.githubusercontent.com/yii2-extensions/time-picker/master/docs/svgs/features.svg">
-    <img src="https://raw.githubusercontent.com/yii2-extensions/time-picker/master/docs/svgs/features-mobile.svg" alt="TimePicker features: Yii2 forms, Bootstrap 3/4/5, time formats, layouts and bundled assets" style="width: 100%;">
+    <source media="(min-width: 768px)" srcset="https://raw.githubusercontent.com/yii2-extensions/time-picker/main/docs/svgs/features.svg">
+    <img src="https://raw.githubusercontent.com/yii2-extensions/time-picker/main/docs/svgs/features-mobile.svg" alt="TimePicker features: Yii2 forms, Bootstrap 3/4/5, time formats, layouts and bundled assets" style="width: 100%;">
 </picture>
 
 ## Quick start
@@ -53,7 +59,7 @@ composer require yii2-extensions/time-picker
 
 Load the Bootstrap CSS that matches your application's `bsVersion`. On Yii 2.0.55, you can use an installed Yii
 Bootstrap asset adapter; on Yii 22, provide the Bootstrap CSS and npm jQuery assets in the application. See the
-[installation guide](https://github.com/yii2-extensions/time-picker/blob/master/docs/installation.md) and
+[installation guide](https://github.com/yii2-extensions/time-picker/blob/main/docs/installation.md) and
 [upgrade notes](UPGRADE.md).
 
 ### Basic usage
@@ -98,14 +104,14 @@ echo $form
 
 Practical guides and usage examples for time inputs, Bootstrap integration and canonical form submission.
 
-- [Installation guide](https://github.com/yii2-extensions/time-picker/blob/master/docs/installation.md): Composer,
+- [Installation guide](https://github.com/yii2-extensions/time-picker/blob/main/docs/installation.md): Composer,
   Bootstrap assets, icons and compatibility.
-- [Configuration guide](https://github.com/yii2-extensions/time-picker/blob/master/docs/configuration.md): widget
-  options, addons, events and asset overrides.
-- [Usage examples](https://github.com/yii2-extensions/time-picker/blob/master/docs/examples.md): standalone inputs and
+- [Configuration guide](https://github.com/yii2-extensions/time-picker/blob/main/docs/configuration.md): widget options,
+  addons, events and asset overrides.
+- [Usage examples](https://github.com/yii2-extensions/time-picker/blob/main/docs/examples.md): standalone inputs and
   model-bound forms.
-- [Testing guide](https://github.com/yii2-extensions/time-picker/blob/master/docs/testing.md): PHPUnit, quality checks
-  and verification limits.
+- [Testing guide](https://github.com/yii2-extensions/time-picker/blob/main/docs/testing.md): PHPUnit, quality checks and
+  verification limits.
 - [Upgrade notes](UPGRADE.md): requirements and migration steps.
 - [Changelog](CHANGELOG.md): current work and historical release changes.
 
@@ -116,7 +122,7 @@ of a page by appending `index.md` to its URL. The
 [AI agents guide](https://yii2-framework.github.io/docs/project/ai-agents/) covers skill installation, client setup and
 verification.
 
-- 🤖 [`yii2-time-picker` skill](https://github.com/yii2-extensions/time-picker/blob/master/docs/agents.md): configure
+- 🤖 [`yii2-time-picker` skill](https://github.com/yii2-extensions/time-picker/blob/main/docs/agents.md): configure
   Bootstrap markup, icons, and plugin options; verify submitted time values and form behavior.
 
 See the [repository guides](#documentation), the [skill source](skills/yii2-time-picker/SKILL.md), the source PHPDoc,
@@ -127,7 +133,7 @@ and the [changelog](CHANGELOG.md). Check the guides against the installed revisi
 [![PHP](https://img.shields.io/badge/%3E%3D8.3-777BB4.svg?style=for-the-badge&logo=php&logoColor=white)](https://www.php.net/releases/8.3/en.php)
 [![Yii 2.0.55+](https://img.shields.io/badge/%3E%3D2.0.55-0073AA.svg?style=for-the-badge&logo=yii&logoColor=white)](https://github.com/yiisoft/yii2/releases/tag/2.0.55)
 [![Yii 22.0.x](https://img.shields.io/badge/22.0.x-0073AA.svg?style=for-the-badge&logo=yii&logoColor=white)](https://github.com/yiisoft/yii2/tree/22.0)
-[![Bootstrap](https://img.shields.io/badge/Bootstrap-3%20%7C%204%20%7C%205-7952B3.svg?style=for-the-badge&logo=bootstrap&logoColor=white)](https://github.com/yii2-extensions/time-picker/blob/master/docs/installation.md)
+[![Bootstrap](https://img.shields.io/badge/Bootstrap-3%20%7C%204%20%7C%205-7952B3.svg?style=for-the-badge&logo=bootstrap&logoColor=white)](https://github.com/yii2-extensions/time-picker/blob/main/docs/installation.md)
 [![Latest Stable Version](https://img.shields.io/packagist/v/yii2-extensions/time-picker.svg?style=for-the-badge&logo=packagist&logoColor=white&label=Stable)](https://packagist.org/packages/yii2-extensions/time-picker)
 [![Total Downloads](https://img.shields.io/packagist/dt/yii2-extensions/time-picker.svg?style=for-the-badge&logo=composer&logoColor=white&label=Downloads)](https://packagist.org/packages/yii2-extensions/time-picker)
 
