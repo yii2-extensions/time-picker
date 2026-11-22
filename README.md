@@ -35,9 +35,9 @@ which wrapped [rendom's TimePicker plugin](https://github.com/rendom/bootstrap-3
 [jdewit's TimePicker](https://github.com/jdewit/bootstrap-timepicker).
 
 <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="images/time-picker-dark.png">
-    <source media="(prefers-color-scheme: light)" srcset="images/time-picker-light.png">
-    <img src="images/time-picker-light.png" alt="Studio booking form with the start time picker open, a 24-hour end time field, and both submitted values in HH:mm:ss">
+    <source media="(prefers-color-scheme: dark)" srcset="docs/images/time-picker-dark.png">
+    <source media="(prefers-color-scheme: light)" srcset="docs/images/time-picker-light.png">
+    <img src="docs/images/time-picker-light.png" alt="Studio booking form with the start time picker open, a 24-hour end time field, and both submitted values in HH:mm:ss">
 </picture>
 
 ## Features
@@ -104,16 +104,14 @@ echo $form
 
 Practical guides and usage examples for time inputs, Bootstrap integration and canonical form submission.
 
-- [Installation guide](https://github.com/yii2-extensions/time-picker/blob/main/docs/installation.md): Composer,
-  Bootstrap assets, icons and compatibility.
-- [Configuration guide](https://github.com/yii2-extensions/time-picker/blob/main/docs/configuration.md): widget options,
-  addons, events and asset overrides.
-- [Usage examples](https://github.com/yii2-extensions/time-picker/blob/main/docs/examples.md): standalone inputs and
-  model-bound forms.
-- [Testing guide](https://github.com/yii2-extensions/time-picker/blob/main/docs/testing.md): PHPUnit, quality checks and
-  verification limits.
-- [Upgrade notes](UPGRADE.md): requirements and migration steps.
-- [Changelog](CHANGELOG.md): current work and historical release changes.
+- 📚 [Installation Guide](https://github.com/yii2-extensions/time-picker/blob/main/docs/installation.md)
+- ⚙️ [Configuration Guide](https://github.com/yii2-extensions/time-picker/blob/main/docs/configuration.md)
+- 💡 [Usage Examples](https://github.com/yii2-extensions/time-picker/blob/main/docs/examples.md)
+- 🔄 [Upgrade Guide](UPGRADE.md)
+- 🧪 [Testing Guide](https://github.com/yii2-extensions/time-picker/blob/main/docs/testing.md)
+
+The guides and the [API reference](https://yii2-framework.github.io/docs/extensions/time-picker/reference/) generated
+from the PHPDoc in `src/` are published at <https://yii2-framework.github.io/docs/extensions/time-picker/>.
 
 ## AI assistance
 

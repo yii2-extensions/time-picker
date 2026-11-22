@@ -93,6 +93,9 @@ class TimePickerAsset extends AssetBundle
         parent::__construct($config);
     }
 
+    /**
+     * Selects minified assets outside debug mode and normalizes the legacy empty path.
+     */
     public function init(): void
     {
         $debug = $this->debug ?? YII_DEBUG;

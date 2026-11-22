@@ -17,6 +17,6 @@ permissions:
 
 jobs:
   easy-coding-standard:
-    uses: yii2-framework/actions/.github/workflows/ecs.yml@0f680c6c2bceb03810384e86a70ba10a2ed90de8 # v2.0.5
+    uses: yii2-framework/actions/.github/workflows/ecs.yml@e3e99bd1c54fb350911bf446690e6146acf7660d # v2.0.6
     with:
       ignore-platform-reqs: true
