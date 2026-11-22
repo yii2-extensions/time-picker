@@ -17,6 +17,12 @@
     <a href="https://codecov.io/github/yii2-extensions/time-picker" target="_blank">
         <img src="https://img.shields.io/codecov/c/github/yii2-extensions/time-picker.svg?style=for-the-badge&logo=codecov&logoColor=white&label=Coverage" alt="Coverage">
     </a>
+    <a href="https://dashboard.stryker-mutator.io/reports/github.com/yii2-extensions/time-picker/master" target="_blank">
+        <img src="https://img.shields.io/endpoint?style=for-the-badge&url=https%3A%2F%2Fbadge-api.stryker-mutator.io%2Fgithub.com%2Fyii2-extensions%2Ftime-picker%2Fmaster" alt="Mutation Testing">
+    </a>
+    <a href="https://github.com/yii2-extensions/time-picker/actions/workflows/static.yml" target="_blank">
+        <img src="https://img.shields.io/github/actions/workflow/status/yii2-extensions/time-picker/static.yml?style=for-the-badge&label=PHPStan&logo=github" alt="PHPStan">
+    </a>
 </p>
 
 <p align="center">
