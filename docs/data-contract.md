@@ -27,6 +27,10 @@ field name.
   existing selectors. A named, enabled widget contributes exactly one value to `FormData`; a disabled or unnamed widget
   contributes none. Popup controls have no submitted names. Commit pending text when the field is left or the form is
   submitted. Server-side validation remains responsible for checking the submitted value.
+- Initialize the picker on an input that is already attached to the document. The hidden `data-timepicker-value` sibling
+  that carries the submitted value and the popup are inserted next to the input and need a parent node, and a picker
+  whose input is no longer in the document is released. Move or clone the visible input together with that sibling; an
+  input moved or cloned alone leaves the submitted value behind.
 - Call `setTime`, `clear`, `showWidget`, `hideWidget`, `destroy` and `remove` through the chainable
   `.timepicker('method')` dispatch, and read `getTime()` from the instance in `.data('timepicker')`. `destroy` and
   `remove` restore the original name and the last submitted value to the visible input, and the field can be initialized

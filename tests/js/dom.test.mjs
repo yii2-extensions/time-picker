@@ -513,6 +513,7 @@ test("supports the legacy span opener and an unnamed standalone field", async (t
   assert.equal(opener.getAttribute("role"), "button");
   assert.equal(opener.getAttribute("tabindex"), "0");
   assert.equal("disabled" in opener, false);
+  assert.equal(opener.getAttribute("aria-disabled"), "false");
   key("a", {}, opener);
   assert.equal(popup.hidden, true);
   key(" ", {}, opener);
@@ -523,6 +524,9 @@ test("supports the legacy span opener and an unnamed standalone field", async (t
   assert.equal(key("Enter", {}, opener), false);
   assert.equal(document.activeElement, $("[data-action=incrementHour]")[0]);
   field.timepicker("hideWidget");
+  input.readOnly = true;
+  await Promise.resolve();
+  assert.equal(opener.getAttribute("aria-disabled"), "true");
 
   const standalone = document.getElementById("standalone");
   $(standalone).timepicker({ disableFocus: true });
@@ -808,6 +812,30 @@ test("commits on blur, clears both fields and publishes only the latest native c
   ]);
 });
 
+test("stops a native change once a changeTime listener supersedes its value", async (t) => {
+  const { field, input, form, submit, notify } = await setup(t);
+  field.timepicker();
+  const events = [];
+  form.addEventListener("change", () => events.push(["change", submit()]));
+  field.on("changeTime.timepicker", ({ time }) => {
+    events.push(["changeTime", time.canonicalValue]);
+    if (time.canonicalValue === "08:01:30") {
+      field.timepicker("setTime", "09:02:00");
+    }
+  });
+  for (const value of ["08:01", "10:03"]) {
+    input.value = value;
+    notify("change");
+  }
+  assert.deepEqual(events, [
+    ["changeTime", "08:01:30"],
+    ["changeTime", "09:02:00"],
+    ["change", "09:02:00"],
+    ["changeTime", "10:03:00"],
+    ["change", "10:03:00"],
+  ]);
+});
+
 test("can destroy during a change caused by opening and can destroy an old instance again", async (t) => {
   const { $, field, input, submit } = await setup(t);
   field.timepicker();
@@ -963,6 +991,75 @@ test("restores the enabled opener after destroying a readonly picker", async (t)
   opener[0].click();
   assert.equal(opener.attr("aria-expanded"), "true");
 });
+
+function inDisabledFieldset(element) {
+  const fieldset = element.ownerDocument.createElement("fieldset");
+  fieldset.disabled = true;
+  element.before(fieldset);
+  fieldset.append(element);
+  return () => {
+    fieldset.disabled = false;
+  };
+}
+
+for (const [scenario, arrange, disabled] of [
+  [
+    "enables an opener when its shared fieldset is enabled",
+    (input) => inDisabledFieldset(input.parentElement),
+    false,
+  ],
+  [
+    "keeps an explicitly disabled opener when its shared fieldset is enabled",
+    (input, opener) => {
+      opener.disabled = true;
+      return inDisabledFieldset(input.parentElement);
+    },
+    true,
+  ],
+  [
+    "keeps an opener disabled by its own fieldset while the input is editable",
+    (input, opener) => {
+      inDisabledFieldset(opener);
+      return () => {};
+    },
+    true,
+  ],
+  [
+    "enables a rendered disabled opener when its readonly input becomes editable",
+    (input, opener) => {
+      opener.disabled = true;
+      input.readOnly = true;
+      return () => {
+        input.readOnly = false;
+      };
+    },
+    false,
+  ],
+  [
+    "enables a rendered disabled opener when its disabled input is enabled",
+    (input, opener) => {
+      opener.disabled = true;
+      input.disabled = true;
+      return () => {
+        input.disabled = false;
+      };
+    },
+    false,
+  ],
+]) {
+  test(scenario, async (t) => {
+    const { $, field, input } = await setup(t);
+    const opener = $(".picker");
+    const release = arrange(input, opener[0]);
+    field.timepicker();
+    release();
+    await Promise.resolve();
+    assert.equal(opener.prop("disabled"), disabled);
+    assert.equal(opener.attr("aria-disabled"), String(disabled));
+    opener[0].click();
+    assert.equal(opener.attr("aria-expanded"), String(!disabled));
+  });
+}
 
 test("leaves unsupported selections alone and blocks edits before readonly sync", async (t) => {
   const { $, field, input, submit, window, key } = await setup(
@@ -1216,16 +1313,32 @@ test("replaces invalid text with an edited popup time and starts hidden seconds 
 });
 
 test("keeps explicit visible seconds when initializing a clone with a stale companion", async (t) => {
-  const { $, field, form, input, window } = await setup(t);
-  field.timepicker({ showSeconds: true });
-  const clone = input.parentElement.cloneNode(true);
-  const copy = clone.querySelector("input");
-  copy.id = "copy";
-  copy.value = "01:45:02 PM";
-  clone.querySelector("[data-timepicker-value]").name = "copy";
-  form.append(clone);
-  $(copy).timepicker({ showSeconds: true });
-  assert.equal(new window.FormData(form).get("copy"), "13:45:02");
+  const samples = [
+    ["01:45:02 PM", true, "13:45:02"],
+    ["13:45", true, "13:45:00"],
+    ["13:45:02", false, "13:45:02"],
+    ["13:45:00", false, "13:45:00"],
+    ["13:45", false, "13:45:30"],
+    ["01:45 PM", false, "13:45:30"],
+    ["13:46", false, "13:46:00"],
+  ];
+  const { $, form, window } = await setup(
+    t,
+    samples
+      .map(
+        ([visible], index) =>
+          `<input id="copy${index}" value="${visible}"><input type="hidden" name="copy${index}" value="13:45:30" data-timepicker-value>`,
+      )
+      .join(""),
+  );
+  samples.forEach(([, showSeconds], index) =>
+    $(`#copy${index}`).timepicker({ showSeconds }),
+  );
+  const values = new window.FormData(form);
+  assert.deepEqual(
+    samples.map((sample, index) => [...sample, values.get(`copy${index}`)]),
+    samples.map((sample) => [...sample, sample[2]]),
+  );
 });
 
 test("uses a supplied initial time and keeps a literal dot in a group class", async (t) => {

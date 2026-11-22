@@ -204,6 +204,9 @@
                         });
                     } else {
                         this.originalButtonDisabled = this.$addon.prop('disabled');
+                        // The widget disables the opener of a disabled or readonly input; any other is explicit.
+                        this.addonDisabled = this.addonDisabled || (this.originalButtonDisabled &&
+                            !this.element.disabled && !this.element.readOnly);
                     }
                 } else {
                     this.$element.attr('data-timepicker-popup-id', this.popupId).on('click' + this.namespace, function () {
@@ -298,10 +301,13 @@
             }
             if (this.$widget && this.$addon.length) {
                 var editable = this.canEdit() && !this.addonDisabled;
-                this.$addon.attr('aria-disabled', String(!editable));
+                var disabled = !editable;
                 if (this.$addon.is('button')) {
-                    this.$addon.prop('disabled', !editable);
+                    // A disabled ancestor fieldset disables the button natively and cannot be observed on the input.
+                    disabled = this.addonDisabled || this.element.disabled || this.element.readOnly;
+                    this.$addon.prop('disabled', disabled);
                 }
+                this.$addon.attr('aria-disabled', String(disabled));
                 if (!editable) {
                     this.hideWidget();
                 }
@@ -551,7 +557,7 @@
             } else if (this.companion && typeof value === 'number') {
                 // A cloned row may carry hidden seconds alongside its formatted input.
                 var submitted = parseTime(this.companion.value, 0);
-                if (!this.showSeconds && typeof submitted === 'number' &&
+                if (!this.showSeconds && typeof submitted === 'number' && this.element.value.split(':').length < 3 &&
                     Math.floor(value / 60) === Math.floor(submitted / 60)) {
                     value = submitted;
                 }
@@ -632,7 +638,10 @@
             if (value === '' || typeof value === 'number') {
                 this.$element.trigger({ type: 'changeTime.timepicker', time: this.timeDetails() });
             }
-            if (!nativeChange && !this.destroyed && this.value === value) {
+            if (nativeChange && this.value !== value) {
+                // A changeTime listener committed a newer value and already published its own change.
+                nativeChange.stopImmediatePropagation();
+            } else if (!nativeChange && !this.destroyed && this.value === value) {
                 var event = new Event('change', { bubbles: true });
                 this.changeEvent = event;
                 this.element.dispatchEvent(event);

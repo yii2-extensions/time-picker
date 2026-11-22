@@ -45,13 +45,16 @@ mkdir -p public/assets
 cp "$root/tests/fixtures/consumer.php" public/index.php
 cp node_modules/bootstrap/dist/css/bootstrap.min.css public/bootstrap.css
 
+# Readiness requires this run's token, so another process listening on the port cannot pass for this server.
+token=$(od -An -N8 -tx1 /dev/urandom | tr -d ' \n')
+printf '%s' "$token" > public/ready.txt
 "$php" -S "127.0.0.1:$port" -t public > php-server.log 2>&1 &
 server=$!
 for attempt in {1..30}; do
-    if curl -fsS -o /dev/null "http://127.0.0.1:$port/"; then
+    if [[ $(curl -fsS "http://127.0.0.1:$port/ready.txt" 2>/dev/null || true) == "$token" ]]; then
         break
     fi
-    if ! kill -0 "$server" || [[ $attempt -eq 30 ]]; then
+    if ! kill -0 "$server" 2>/dev/null || [[ $attempt -eq 30 ]]; then
         cat php-server.log
         exit 1
     fi
