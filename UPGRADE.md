@@ -5,7 +5,7 @@
 - The picker now submits a 24-hour `HH:mm:ss` value instead of the displayed text: a field displaying `01:45 PM` can
   submit `13:45:30` even with seconds hidden. Update server-side validators and storage to accept it, map empty strings
   to `null` where appropriate and keep rejecting invalid text, as described in the
-  [time value contract](https://github.com/yii2-extensions/time-picker/blob/master/docs/data-contract.md).
+  [time value contract](https://github.com/yii2-extensions/time-picker/blob/main/docs/data-contract.md).
 - A hidden companion input now carries the field name, and the visible input keeps its ID. Update client code that reads
   the value by name to use `FormData` or `event.time.canonicalValue`. Callbacks now run after the field changes.
 - `defaultTime` now leaves a blank input empty instead of defaulting to `current`. Set
@@ -18,8 +18,8 @@
 - DynamicForm client validation needs an adapter that reads the name of the adjacent `[data-timepicker-value]` input
   when renewing the validator for a time field. Older DynamicForm versions can clone and submit the field. Keep
   server-side validation for those rows until the DynamicForm adapter is updated.
-- See [the installation guide](https://github.com/yii2-extensions/time-picker/blob/master/docs/installation.md) for
-  jQuery and Bootstrap asset setup on Yii 22.
+- See [the installation guide](https://github.com/yii2-extensions/time-picker/blob/main/docs/installation.md) for jQuery
+  and Bootstrap asset setup on Yii 22.
 
 ## Lowercase namespace
 

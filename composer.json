@@ -16,7 +16,7 @@
     ],
     "license": "BSD-3-Clause",
     "support": {
-        "docs": "https://github.com/yii2-extensions/time-picker/blob/master/docs/installation.md",
+        "docs": "https://github.com/yii2-extensions/time-picker/blob/main/docs/installation.md",
         "issues": "https://github.com/yii2-extensions/time-picker/issues",
         "source": "https://github.com/yii2-extensions/time-picker"
     },
@@ -60,7 +60,7 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "0.3.x-dev"
+            "dev-main": "0.3.x-dev"
         },
         "skills": {
             "source": "skills"
