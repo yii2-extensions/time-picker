@@ -38,7 +38,6 @@ bash scripts/verify-consumer.sh 22.0.x-dev
 ```bash
 npm run build
 npm run check:assets
-composer --no-plugins quality
 composer --no-plugins static
 composer --no-plugins ecs-check
 composer --no-plugins check-dependencies
