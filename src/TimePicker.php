@@ -1,151 +1,271 @@
 <?php
 
-/**
- * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2014 - 2021
- * @package yii2-widgets
- * @subpackage yii2-widget-timepicker
- * @version 1.0.5
- */
+declare(strict_types=1);
 
-namespace Yii2\Extensions\TimePicker;
+namespace yii2\extensions\timepicker;
 
+use Yii;
 use yii\base\InvalidConfigException;
-use yii\helpers\ArrayHelper;
-use yii\helpers\Html;
-use kartik\base\InputWidget;
+use yii\helpers\{ArrayHelper, Html, Json};
+use yii\web\{JsExpression, View};
+use yii\widgets\InputWidget;
+
+use function array_map;
+use function array_replace;
+use function explode;
+use function hash;
+use function is_array;
+use function is_int;
+use function is_string;
 
 /**
- * The TimePicker widget  allows you to easily select a time for a text input using your mouse or keyboards arrow keys.
- * Thus widget is a wrapper enhancement over the TimePicker JQuery plugin by rendom forked from the plugin by jdewit.
- * Additional enhancements have been done to this input widget and plugin by Krajee to fix various bugs, and also
- * provide compatibility with Bootstrap 3.
+ * Renders a Timepicker bound to a model attribute or a named input.
  *
- * @author Kartik Visweswaran <kartikv2@gmail.com>
- * @since 1.0
  * @see https://github.com/rendom/bootstrap-3-timepicker
  * @see https://github.com/jdewit/bootstrap-timepicker
  */
 class TimePicker extends InputWidget
 {
     /**
-     * @var string the size of the input - 'lg', 'md', 'sm', 'xs'
+     * Trusted HTML for the addon, `false` to render no addon, or `null` for the Bootstrap version's clock icon.
      */
-    public $size;
-
+    public string|false|null $addon = null;
     /**
-     * @var string|boolean the addon content
+     * @var array<string, mixed> Addon attributes, including optional asButton and buttonOptions.
      */
-    public $addon;
-
+    public array $addonOptions = [];
     /**
-     * @var array HTML attributes for the addon container. The following special options are recognized:
-     * - `asButton`: _boolean_, if the addon is to be displayed as a button.
-     * - `buttonOptions`: _array_, HTML attributes if the addon is to be displayed like a button. If [[asButton]] is
-     *   `true`, this will default to :
-     *    - `['class' => 'btn btn-default']` for [[bsVersion]] = '3.x' or .
-     *    - `['class' => 'btn btn-secondary']` for [[bsVersion]] = '4.x' and '5.x'
+     * Bootstrap major version or dotted version; defaults to the application setting or Bootstrap 3.
      */
-    public $addonOptions = [];
-
+    public int|string|null $bsVersion = null;
     /**
-     * @var array HTML attributes for the input group container
+     * @var array<array-key, mixed> Outer wrapper attributes.
      */
-    public $containerOptions = [];
-
+    public array $containerOptions = [];
     /**
-     * @inheritdoc
+     * @var array<string, mixed> Defaults merged before the supplied HTML attributes.
      */
-    public $pluginName = 'timepicker';
-
+    public array $defaultOptions = [];
     /**
-     * @inheritdoc
-     * @throws InvalidConfigException
+     * @var array<string, mixed> Defaults merged before the supplied plugin options.
      */
-    public function run()
+    public array $defaultPluginOptions = [];
+    /**
+     * Sets the disabled HTML attribute unless options already specifies it.
+     */
+    public bool $disabled = false;
+    /**
+     * Yii view position for the JavaScript option variable.
+     */
+    public int $hashVarLoadPosition = View::POS_HEAD;
+    /**
+     * Language passed to Yii message translation for the popup opener.
+     */
+    public string|null $language = null;
+    /**
+     * Optional PJAX container ID used to reinitialize replaced fields.
+     */
+    public string|null $pjaxContainerId = null;
+    /**
+     * @var array<string, string|JsExpression> JavaScript callbacks keyed by jQuery event name.
+     */
+    public array $pluginEvents = [];
+    /**
+     * @var array<string, mixed>|false JavaScript options, or false to keep a plain input.
+     */
+    public array|false $pluginOptions = [];
+    /**
+     * Sets the readonly HTML attribute unless options already specifies it.
+     */
+    public bool $readonly = false;
+    /**
+     * @var string|null Bootstrap input sizing suffix.
+     */
+    public string|null $size = null;
+    /**
+     * @var 3|4|5
+     */
+    private int $bootstrapVersion;
+
+    public function init(): void
     {
-        $this->initIcon('up');
-        $this->initIcon('down');
-        $this->registerAssets();
-        echo Html::tag('div', $this->renderInput(), $this->containerOptions);
+        $this->options = ArrayHelper::merge($this->defaultOptions, $this->options);
+
+        if ($this->disabled) {
+            $this->options['disabled'] ??= true;
+        }
+        if ($this->readonly) {
+            $this->options['readonly'] ??= true;
+        }
+
+        $version = $this->bsVersion ?? Yii::$app->params['bsVersion'] ?? 3;
+
+        $version = is_int($version) || is_string($version) ? (string) $version : '';
+
+        $this->bootstrapVersion = match (explode('.', $version)[0]) {
+            '3' => 3,
+            '4' => 4,
+            '5' => 5,
+            default => throw new InvalidConfigException(
+                'TimePicker requires Bootstrap 3, 4 or 5.',
+            ),
+        };
+
+        parent::init();
     }
 
     /**
-     * Initializes icon for time units up and down buttons
-     * @param string $type whether 'up' or 'down'
-     * @throws InvalidConfigException|\Exception
+     * Registers the local assets and the initial options used by the jQuery and DynamicForm entry points.
      */
-    protected function initIcon($type)
-    {
-        $prop = $type . 'ArrowStyle';
-        if (!isset($this->pluginOptions[$prop])) {
-            $prefix = !$this->isBs(3) ? 'fas fa-' : 'glyphicon glyphicon-';
-            $this->pluginOptions[$prop] = $prefix . 'chevron-' . $type;
-        }
-    }
-
-    /**
-     * Renders the input
-     *
-     * @return string
-     * @throws InvalidConfigException|\Exception
-     */
-    protected function renderInput()
-    {
-        $notBs3 = !$this->isBs(3);
-        $isBs5 = $this->isBs(5);
-        if (!isset($this->addon)) {
-            $this->addon = $notBs3 ? '<i class="far fa-clock"></i>' : '<i class="glyphicon glyphicon-time"></i>';
-        }
-        Html::addCssClass($this->options, 'form-control');
-        if (!empty($this->options['disabled'])) {
-            Html::addCssClass($this->addonOptions, 'disabled-addon');
-        }
-        if (ArrayHelper::getValue($this->pluginOptions, 'template', true) === false) {
-            $css = $notBs3 ? 'bootstrap-timepicker4' : 'bootstrap-timepicker3';
-            Html::addCssClass($this->containerOptions, ['bootstrap-timepicker', $css]);
-            if (isset($this->size)) {
-                Html::addCssClass($this->options, ($notBs3 ? 'form-control-' : 'input-') . $this->size);
-                Html::addCssClass($this->addonOptions, 'inline-addon inline-addon-' . $this->size);
-            } else {
-                Html::addCssClass($this->addonOptions, 'inline-addon');
-            }
-            return $this->getInput('textInput') . Html::tag('span', $this->addon, $this->addonOptions);
-        }
-        Html::addCssClass($this->containerOptions, 'bootstrap-timepicker input-group');
-        $asButton = ArrayHelper::remove($this->addonOptions, 'asButton', false);
-        $buttonOptions = ArrayHelper::remove($this->addonOptions, 'buttonOptions', []);
-
-        if ($asButton) {
-            $css = $notBs3 ? 'input-group-append' : 'input-group-btn';
-            $tag = $notBs3 ? 'div' : 'span';
-            Html::addCssClass($this->addonOptions, [$css, 'picker']);
-            $buttonOptions['type'] = 'button';
-            if (empty($buttonOptions['class'])) {
-                Html::addCssClass($buttonOptions, 'btn btn-default');
-            }
-            $button = Html::button($this->addon, $buttonOptions);
-            $addon = $isBs5 ? $button : Html::tag($tag, $button, $this->addonOptions);
-        } else {
-            $css = $notBs3 ? 'input-group-text' : 'input-group-addon';
-            Html::addCssClass($this->addonOptions, [$css, 'picker']);
-            $addon = Html::tag('span', $this->addon, $this->addonOptions);
-            if ($notBs3 && !$isBs5) {
-                $addon = Html::tag('div', $addon, ['class' => 'input-group-append']);
-            }
-        }
-        if (isset($this->size)) {
-            Html::addCssClass($this->containerOptions, 'input-group-' . $this->size);
-        }
-        return $this->getInput('textInput') . $addon;
-    }
-
-    /**
-     * Registers the client assets for [[Timepicker]] widget
-     */
-    public function registerAssets()
+    public function registerAssets(): void
     {
         $view = $this->getView();
-        TimePickerAsset::register($view);
-        $this->registerPlugin($this->pluginName);
+
+        TimePickerAsset::register($view)->registerBootstrap($view, $this->bootstrapVersion);
+
+        if ($this->pluginOptions === false) {
+            return;
+        }
+
+        $options = ArrayHelper::merge($this->defaultPluginOptions, $this->pluginOptions);
+
+        $icon = $this->bootstrapVersion === 3 ? 'glyphicon glyphicon-' : 'fas fa-';
+
+        $options['upArrowStyle'] ??= "{$icon}chevron-up";
+        $options['downArrowStyle'] ??= "{$icon}chevron-down";
+
+        if ($this->pluginEvents !== []) {
+            $options['events'] = array_map(
+                static fn(string|JsExpression $handler): JsExpression => $handler instanceof JsExpression
+                    ? $handler
+                    : new JsExpression($handler),
+                $this->pluginEvents,
+            );
+        }
+
+        $encoded = Json::htmlEncode($options);
+
+        $key = 'timepicker_' . hash('sha256', $encoded);
+
+        $this->options['data-krajee-timepicker'] = $key;
+
+        if ($this->pjaxContainerId !== null) {
+            $this->options['data-timepicker-pjax'] = $this->pjaxContainerId;
+        }
+
+        $view->registerJs("window.$key = $encoded;", $this->hashVarLoadPosition, $key);
+
+        $id = Json::htmlEncode($this->options['id']);
+
+        $view->registerJs("jQuery(document.getElementById($id)).timepicker(window.$key);", key: "timepicker-$id");
+    }
+
+    public function run(): string
+    {
+        $this->registerAssets();
+
+        if ($this->pluginOptions === false) {
+            Html::addCssClass($this->options, 'form-control');
+
+            return $this->renderInputHtml('text');
+        }
+
+        $input = $this->renderInput();
+
+        return Html::tag('div', $input, $this->containerOptions);
+    }
+
+    /**
+     * Renders the Bootstrap version's input group and addon.
+     */
+    protected function renderInput(): string
+    {
+        $bs3 = $this->bootstrapVersion === 3;
+
+        $icon = $this->addon ?? (
+            $bs3
+                ? '<i class="glyphicon glyphicon-time" aria-hidden="true"></i>'
+                : '<i class="far fa-clock" aria-hidden="true"></i>'
+        );
+
+        $addonOptions = $this->addonOptions;
+
+        $asButton = ArrayHelper::remove($addonOptions, 'asButton') === true;
+        $buttonOptions = ArrayHelper::remove($addonOptions, 'buttonOptions') ?? [];
+
+        Html::addCssClass($this->options, 'form-control');
+
+        $inline = ($this->pluginOptions['template'] ?? $this->defaultPluginOptions['template'] ?? true) === false;
+
+        if ($inline) {
+            Html::addCssClass($this->containerOptions, ['bootstrap-timepicker', 'bootstrap-timepicker' . ($bs3 ? '3' : '4')]);
+            Html::addCssClass($addonOptions, 'inline-addon');
+
+            if ($this->size !== null) {
+                Html::addCssClass($this->options, ($bs3 ? 'input-' : 'form-control-') . $this->size);
+                Html::addCssClass($addonOptions, 'inline-addon-' . $this->size);
+            }
+        } else {
+            Html::addCssClass($this->containerOptions, ['bootstrap-timepicker', 'input-group']);
+
+            if ($this->size !== null) {
+                Html::addCssClass($this->containerOptions, 'input-group-' . $this->size);
+            }
+        }
+
+        return $this->renderInputHtml('text') . match (true) {
+            $icon === false => '',
+            $inline => Html::tag('span', $icon, $addonOptions),
+            default => $this->renderAddon($icon, $addonOptions, $buttonOptions, $asButton),
+        };
+    }
+
+    /**
+     * @param array<array-key, mixed> $addonOptions
+     * @param mixed $buttonOptions Legacy nested addon configuration.
+     */
+    private function renderAddon(string $icon, array $addonOptions, mixed $buttonOptions, bool $asButton): string
+    {
+        if (!is_array($buttonOptions)) {
+            throw new InvalidConfigException(
+                'TimePicker addon buttonOptions must be an array.',
+            );
+        }
+
+        $bs3 = $this->bootstrapVersion === 3;
+
+        $buttonOptions['type'] = 'button';
+
+        $buttonOptions['aria-label'] ??= Yii::t('app', 'Choose a time', [], $this->language);
+
+        if (($this->options['disabled'] ?? false) !== false || ($this->options['readonly'] ?? false) !== false) {
+            $buttonOptions['disabled'] = true;
+            Html::addCssClass($addonOptions, 'disabled-addon');
+        }
+
+        if ($asButton) {
+            $buttonOptions['class'] ??= $bs3 ? 'btn btn-default' : 'btn btn-secondary';
+            if ($this->bootstrapVersion !== 5) {
+                Html::addCssClass($addonOptions, $bs3 ? 'input-group-btn' : 'input-group-append');
+            }
+        } else {
+            Html::addCssClass($addonOptions, $bs3 ? 'input-group-addon' : 'input-group-text');
+            Html::addCssClass($buttonOptions, 'timepicker-addon-button');
+        }
+
+        Html::addCssClass($buttonOptions, 'picker');
+
+        if ($this->bootstrapVersion === 5) {
+            $classes = $addonOptions['class'] ?? [];
+            if (!is_array($classes) && !is_string($classes)) {
+                throw new InvalidConfigException('TimePicker addon class must be a string or array.');
+            }
+            Html::addCssClass($buttonOptions, $classes);
+            return Html::button($icon, array_replace($addonOptions, $buttonOptions));
+        }
+
+        $addon = Html::tag($bs3 || !$asButton ? 'span' : 'div', Html::button($icon, $buttonOptions), $addonOptions);
+
+        return $bs3 || $asButton ? $addon : Html::tag('div', $addon, ['class' => 'input-group-append']);
     }
 }

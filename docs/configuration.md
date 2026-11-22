@@ -1,36 +1,29 @@
 # Configuration
 
-TimePicker extends `kartik\base\InputWidget`. Configure it with a `name` and `value`, or with a `model` and `attribute`.
+Use `name` and `value` for a standalone input, or `model` and `attribute` for an ActiveForm field.
 
-- `options` contains the input HTML attributes.
-- `pluginOptions` configures the bundled jQuery time picker, including `showSeconds`, `showMeridian`, `minuteStep`,
-  `defaultTime` and `template`.
-- `pluginEvents` maps plugin event names to JavaScript handlers.
-- `containerOptions` contains the outer wrapper HTML attributes.
-- `addon` supplies trusted HTML for the clock control. Do not put untrusted text into it without encoding.
-- `addonOptions` contains addon attributes. Set `asButton` and `buttonOptions` to render a button.
-- `size` selects an input-group size such as `sm` or `lg`.
-- `disabled` and `readonly` are inherited Krajee properties.
+- `options` sets input HTML attributes. `disabled` and `readonly` set those attributes when the input options leave them
+  unspecified.
+- `pluginOptions` configures the bundled plugin, including `showSeconds`, `showMeridian`, `minuteStep`, `secondStep`,
+  `defaultTime`, `template`, `upArrowStyle` and `downArrowStyle`. Pass `false` to render a plain text input with its
+  original name.
+- `pluginEvents` maps jQuery event names to JavaScript handlers. The same configuration is available to cloned inputs
+  through the `data-krajee-timepicker` option reference.
+- `containerOptions` contains wrapper attributes. `size` sets a Bootstrap size such as `sm` or `lg`.
+- `addon` supplies trusted HTML or `false` to omit the opener. `addonOptions['buttonOptions']` can set a custom
+  accessible name and button attributes. Use `addonOptions['asButton'] = true` for Bootstrap button classes.
+- `pjaxContainerId` identifies the Yii PJAX container for reinitialization after replacement.
 
-Set `params['bsVersion']` in the application to the Bootstrap major version you installed. A per-widget `bsVersion` can
-otherwise disagree with the version selected by its globally registered asset bundle.
+The dropdown is the default popup. Set `template` to `false` for an inline input with keyboard adjustments or to
+`'modal'` for a native dialog. `modalBackdrop: true` displays its backdrop. Customize `labels` within `pluginOptions` to
+translate the title, unit names, arrow labels and close button. Use the opener's `aria-label` to override its Yii
+application translation.
 
-For Bootstrap 4 addon buttons, set a Bootstrap-compatible button class explicitly:
+Click a unit or use the left and right arrows to select a unit in the text field. Up and down step the selected unit.
+Tab and Shift+Tab navigate the selected units and continue through the form at either end. Use the opener button or F4
+to open the popup and Escape to close it.
 
-```php
-'addonOptions' => [
-    'asButton' => true,
-    'buttonOptions' => ['class' => 'btn btn-secondary'],
-],
-```
+The asset manager can replace the bundle's CSS and JS. Set its `bsDependencyEnabled` to `false` if the application
+registers its own Bootstrap styles.
 
-For Bootstrap 5, use the default span addon rather than `asButton`: the current button markup does not receive the
-selector used by the plugin to open the picker.
-
-For an inline input without the popup template, set `pluginOptions['template']` to `false`.
-
-`TimePickerAsset` inherits Krajee's asset overrides and debug/minified file selection. Preserve those settings when
-customizing the application asset manager.
-
-The `data-krajee-timepicker` attribute and its named options variable are used by dynamic-form integrations. Preserve
-these contracts when customizing client initialization or cloning widgets.
+- [Time value and events](data-contract.md)
