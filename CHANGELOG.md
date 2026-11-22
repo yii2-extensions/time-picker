@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - chore!: replace Krajee Base with native Yii `InputWidget`; require PHP `8.3`, add Yii `22` support, canonical submission and lowercase namespace.
 - chore: add mutation testing and PHPStan badges to `README.md`.
+- chore: update infection configuration to include Stryker report settings.
 
 ## 1.0.1 - 2024-11-05
 
