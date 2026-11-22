@@ -5,6 +5,8 @@ of `yii2-extensions/time-picker`. It does not install dependencies, grant permis
 
 ## Install in an application
 
+### Automatic Composer installation
+
 Use the [one-time Composer setup](https://yii2-framework.github.io/docs/project/ai-agents/#composer-installation) for
 the application's installed `llm/skills` synchronizer. Explicitly trust `yii2-extensions/time-picker` in its
 configuration, then inspect the installed donor and synchronization result. The package declares `extra.skills.source`
@@ -17,8 +19,11 @@ composer skills:show
 composer skills:update
 ```
 
-Run these skill commands only when the synchronizer is installed and configured. For an optional project-scoped
-installation from a checkout or installed donor that contains the skill:
+Run these skill commands only when the synchronizer is installed and configured.
+
+### Optional npx installation
+
+Run the pinned installer for the project from a checkout or installed donor that contains the skill:
 
 ```bash
 npx skills@1.7.2 add /absolute/path/to/time-picker --list

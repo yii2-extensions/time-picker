@@ -87,6 +87,9 @@ class TimePicker extends InputWidget
      */
     private int $bootstrapVersion;
 
+    /**
+     * Merges input defaults and resolves the Bootstrap major version.
+     */
     public function init(): void
     {
         $this->options = ArrayHelper::merge($this->defaultOptions, $this->options);
@@ -160,6 +163,9 @@ class TimePicker extends InputWidget
         $view->registerJs("jQuery(document.getElementById($id)).timepicker(window.$key);", key: "timepicker-$id");
     }
 
+    /**
+     * Registers the assets and renders the time picker or a plain text input.
+     */
     public function run(): string
     {
         $this->registerAssets();
