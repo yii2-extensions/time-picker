@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 2.0.1 Under development
+
 ## 2.0.0 November 21, 2026
 
 - chore!: replace Krajee Base with native Yii `InputWidget`; require PHP `8.3`, add Yii `22` support, canonical submission and lowercase namespace.
