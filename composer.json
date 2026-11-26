@@ -40,7 +40,7 @@
         "maglnet/composer-require-checker": "^4.17",
         "php-forge/coding-standard": "^0.3.4",
         "phpstan/phpstan": "^2.3.5",
-        "phpunit/phpunit": "^12.5"
+        "phpunit/phpunit": "^13.4"
     },
     "suggest": {
         "yiisoft/yii2-jquery": "Provides Yii 22 client script strategies for ActiveForm and other Yii widgets.",
